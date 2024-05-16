@@ -14,12 +14,76 @@ typedef struct Fila
     Item *primeiro;
 } Fila;
 
+void prompt();
+
+int adicionarItem(tipo_item, Fila *);
+
+tipo_item removerItem(Fila *);
+
+void imprimirFila(Fila *);
+
+int main()
+{
+    Fila *fila = (Fila *)malloc(sizeof(Fila));
+
+    if (fila == NULL)
+    {
+        printf("Não foi possível alocar memória para a fila");
+        return 0;
+    }
+
+    fila->primeiro = NULL;
+
+    int comando;
+
+    prompt();
+
+    do
+    {
+        scanf("%d", &comando);
+
+        switch (comando)
+        {
+        case 1:
+            printf("Valor: ");
+            int val;
+            scanf("%d", &val);
+            if (!adicionarItem(val, fila))
+                printf("Não foi possível adicionar um novo item na fila\n");
+            break;
+        case 2:
+            tipo_item valorItemRemovido = removerItem(fila);
+            if (valorItemRemovido == -1)
+                printf("A fila já está vazia\n");
+            else
+                printf("Valor do item removido: %d\n", valorItemRemovido);
+            break;
+        case 3:
+            imprimirFila(fila);
+            break;
+        case 0:
+            break;
+        default:
+            printf("Insira uma entrada válida\n");
+            prompt();
+        }
+    } while (comando != 0);
+
+    while (fila->primeiro != NULL)
+    {
+        removerItem(fila);
+    }
+
+    free(fila);
+
+    return 0;
+}
+
 void prompt()
 {
     printf("1. Adicionar um item\n");
     printf("2. Remover um item\n");
-    printf("3. Imprimir o primeiro item\n");
-    printf("4. Imprimir a fila\n");
+    printf("3. Imprimir a fila\n");
     printf("0. Sair\n");
 }
 
@@ -51,30 +115,20 @@ int adicionarItem(tipo_item valor, Fila *fila)
     return 1;
 }
 
-int removerItem(Fila *fila)
+tipo_item removerItem(Fila *fila)
 {
     Item *primeiro = fila->primeiro;
 
     if (primeiro == NULL)
-        return 0;
+        return -1;
 
     fila->primeiro = primeiro->proximo;
 
+    tipo_item valor = primeiro->valor;
+
     free(primeiro);
 
-    return 1;
-}
-
-int imprimirPrimeiro(Fila *fila)
-{
-    Item *primeiro = fila->primeiro;
-
-    if (primeiro == NULL)
-        return 0;
-
-    printf("%d\n", primeiro->valor);
-
-    return 1;
+    return valor;
 }
 
 void imprimirFila(Fila *fila)
@@ -88,62 +142,4 @@ void imprimirFila(Fila *fila)
         printf("%d. %d\n", ++i, item->valor);
         item = item->proximo;
     }
-}
-
-int main()
-{
-    Fila *fila = (Fila *)malloc(sizeof(Fila));
-
-    if (fila == NULL)
-    {
-        printf("Não foi possível alocar memória para a fila");
-        return 0;
-    }
-
-    fila->primeiro = NULL;
-
-    int command;
-
-    prompt();
-
-    do
-    {
-        scanf("%d", &command);
-
-        switch (command)
-        {
-        case 1:
-            printf("Valor: ");
-            int val;
-            scanf("%d", &val);
-            if (!adicionarItem(val, fila))
-                printf("Não foi possível adicionar um novo item na fila\n");
-            break;
-        case 2:
-            if (!removerItem(fila))
-                printf("A fila já está vazia\n");
-            break;
-        case 3:
-            if (!imprimirPrimeiro(fila))
-                printf("A fila está vazia\n");
-            break;
-        case 4:
-            imprimirFila(fila);
-            break;
-        case 0:
-            break;
-        default:
-            printf("Insira uma entrada válida\n");
-            prompt();
-        }
-    } while (command != 0);
-
-    while (fila->primeiro != NULL)
-    {
-        removerItem(fila);
-    }
-
-    free(fila);
-
-    return 0;
 }

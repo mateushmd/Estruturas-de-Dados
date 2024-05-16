@@ -33,25 +33,27 @@ int adicionarItem(tipo_item val, Pilha *pilha)
 
     Item *topo = pilha->topo;
 
-    item->anterior = topo != NULL ? topo : NULL;
+    item->anterior = topo;
 
     pilha->topo = item;
 
     return 1;
 }
 
-int removerItem(Pilha *pilha)
+tipo_item removerItem(Pilha *pilha)
 {
     Item *topo = pilha->topo;
 
     if (topo == NULL)
-        return 0;
+        return -1;
 
     pilha->topo = topo->anterior;
 
+    tipo_item valor = topo->valor;
+
     free(topo);
 
-    return 1;
+    return valor;
 }
 
 void imprimirPilha(Pilha *pilha)
@@ -90,14 +92,17 @@ int main()
         {
         case 1:
             printf("Valor: ");
-            int val;
-            scanf("%d", &val);
+            tipo_item val;
+            scanf("%d", &val); // Mudar conforme o tipo do item
             if (!adicionarItem(val, pilha))
                 printf("Não foi possível adicionar um novo item à pilha\n");
             break;
         case 2:
-            if (!removerItem(pilha))
+            tipo_item valorItemRemovido = removerItem(pilha);
+            if (valorItemRemovido == -1)
                 printf("A pilha já está vazia\n");
+            else
+                printf("Valor do item removido: %d\n", valorItemRemovido); // Mudar conforme o tipo do item
             break;
         case 3:
             imprimirPilha(pilha);

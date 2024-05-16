@@ -1,0 +1,4 @@
+- Lista
+- Arvore
+- Grafo
+- Corda 
